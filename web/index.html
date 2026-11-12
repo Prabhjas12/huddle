@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Huddle</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f3324'/%3E%3Cellipse cx='16' cy='16' rx='11' ry='7' transform='rotate(-30 16 16)' fill='%23ff6a13'/%3E%3Cpath d='M11 18.5l10-5M14 13.6l1.6 2.8M16.4 12.4l1.6 2.8' stroke='%230f3324' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="rail">
+    <a class="brand" href="#ask" aria-label="Huddle home">
+      <svg class="brand-mark" viewBox="0 0 32 20" aria-hidden="true"><ellipse cx="16" cy="10" rx="15" ry="9"/><path d="M9 10h14M12 7.5v5M16 7.5v5M20 7.5v5"/></svg>
+      <span class="brand-name">Huddle</span>
+    </a>
+    <div class="teamcard" id="teamcard"></div>
+    <nav class="nav" aria-label="Sections">
+      <a href="#ask" data-view="ask"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg><span>Ask Huddle</span><i class="nav-dot" id="nav-dot" hidden></i></a>
+      <a href="#lineup" data-view="lineup"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>Lineup</span></a>
+      <a href="#matchup" data-view="matchup"><svg viewBox="0 0 24 24"><path d="M5 5l6 7-6 7M19 5l-6 7 6 7"/></svg><span>Matchup</span></a>
+      <a href="#trades" data-view="trades"><svg viewBox="0 0 24 24"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg><span>Trades</span></a>
+      <a href="#waivers" data-view="waivers"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span>Waivers</span></a>
+      <a href="#league" data-view="league"><svg viewBox="0 0 24 24"><path d="M7 4h10v4a5 5 0 0 1-10 0zM12 13v4M8 20h8M7 6H4a3 3 0 0 0 3 3M17 6h3a3 3 0 0 1-3 3"/></svg><span>League</span></a>
+      <a href="#report" data-view="report"><svg viewBox="0 0 24 24"><path d="M9 3h6v3H9zM7 4.5H5V21h14V4.5h-2M8.5 13.5l2.5 2.5 4.5-5"/></svg><span>Report card</span></a>
+      <a href="#settings" data-view="settings" class="nav-settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg><span>Settings</span></a>
+    </nav>
+    <div class="rail-foot" id="railfoot"></div>
+  </aside>
+
+  <main class="main" id="main" tabindex="-1">
+    <div class="loading" id="loading" hidden>
+      <div class="ball" aria-hidden="true"></div>
+      <p id="loading-text">Syncing your league…</p>
+    </div>
+    <section id="view"></section>
+  </main>
+</div>
+
+<aside class="drawer" id="drawer" aria-hidden="true" aria-label="Player report">
+  <button class="drawer-close" id="drawer-close" aria-label="Close player report">×</button>
+  <div id="drawer-body"></div>
+</aside>
+<div class="scrim" id="scrim" hidden></div>
+
+<!-- The chat panel and its corner button are on every page, so an answer keeps going while you browse. -->
+<section class="dock" id="dock" aria-label="Ask Huddle" hidden>
+  <header class="dock-head">
+    <span id="dock-ai"></span>
+    <div class="dock-actions">
+      <button class="btn ghost small" id="dock-new" hidden>New chat</button>
+      <a class="icon-btn" href="#ask" id="dock-full" title="Open the full Ask page" aria-label="Open the full Ask page"><svg viewBox="0 0 24 24"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></svg></a>
+      <button class="icon-btn" id="dock-close" title="Close" aria-label="Close chat"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+  </header>
+  <div class="dock-msgs" id="dock-msgs" aria-live="polite"></div>
+  <div class="composer dock-composer"><div class="composer-box">
+    <textarea id="dock-q" rows="1" placeholder="Ask Huddle…" aria-label="Message"></textarea>
+    <button class="btn primary" id="dock-send">Send</button></div></div>
+</section>
+<button class="launcher" id="launcher" aria-label="Open Ask Huddle">
+  <span class="l-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg><span class="spin"></span></span>
+  <span class="l-text" id="launcher-text">Ask Huddle</span>
+</button>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
